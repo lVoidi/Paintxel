@@ -1,1 +1,4 @@
-# Nothing
+
+class FrontApp:
+    pass
+
