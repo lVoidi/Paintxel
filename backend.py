@@ -1,0 +1,3 @@
+
+class PaintxelCanvas:
+    pass

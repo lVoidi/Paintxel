@@ -1,3 +1,4 @@
 
 class FrontApp:
     pass
+
