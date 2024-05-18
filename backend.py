@@ -10,7 +10,7 @@ class PaintxelCanvas:
         
         # Historial de cambios a la pantalla 
         self.history = []
-        self.last = 0 
+        self.pointer = 0 
     
     def rotate_left(self) -> list:
         """
@@ -24,6 +24,7 @@ class PaintxelCanvas:
                 new[j][i] = self.screen[i][columns-1-j]
 
         self.history.append(self.screen)
+        self.pointer += 1
         self.screen = new
 
         return new
@@ -51,12 +52,36 @@ class PaintxelCanvas:
         
 
         self.history.append(self.screen)
+        self.pointer += 1
         self.screen = result
 
         return result
     
+    def horizontal_reflex(self) -> list:
+        rows, columns = len(self.screen), len(self.screen[0])
+        result = [[0]*columns for _ in range(rows)]
+        
+        for i in range(rows):
+            for j in range(columns):
+                result[i][columns-1-j] = self.screen[i][j]
+        
+        self.history.append(self.screen)
+        self.pointer += 1
+        self.screen = result
+
+        return result
+
     def vertical_reflex(self) -> list:
-        return []
+        rows, columns = len(self.screen), len(self.screen[0])
+        result = [[0]*columns for _ in range(rows)]
+        for row in range(rows):
+            result[rows-1-row] = self.screen[row]
+        
+        self.history.append(self.screen)
+        self.pointer += 1
+        self.screen = result
+
+        return result
 
     def __str__(self) -> str:
         """
@@ -97,8 +122,7 @@ if __name__ == "__main__":
     print(f"Rotada a la derecha:\n{str(screen)}")
     screen.rotate_left()
     print(f"Rotada a la izquierda:\n{str(screen)}")
-    screen.rotate_left()
-    print(f"Rotada a la izquierda^2:\n{str(screen)}")
-    screen.rotate_left()
-    print(f"Rotada a la izquierda^3:\n{str(screen)}")
-    print(f"{screen.history}")
+    screen.horizontal_reflex()
+    print(f"Reflexión horizontal: \n{str(screen)}" )
+    screen.vertical_reflex()
+    print(f"Reflexión vertical: \n{str(screen)}" )
