@@ -7,7 +7,7 @@ class PaintxelCanvas:
         """
         # Pantalla que muestra
         self.screen = screen
-        
+        self.ascii_values = ["", ".", ":", "-", "=", "¡", "&", "$", "%", "@"]
         # Historial de cambios a la pantalla 
         self.history = [screen]
         self.pointer = 0 
@@ -103,6 +103,40 @@ class PaintxelCanvas:
         self.screen = self.history[self.pointer]
         result = self.screen
 
+        return result
+    
+    def high_contrast(self) -> list:
+        rows, columns = len(self.screen), len(self.screen[0])
+        result = [[0]*columns for _ in range(rows)]
+        for i in range(rows):
+            for j in range(columns):
+                element = self.screen[i][j]
+                result[i][j] = 0 if element <= 4 else 9
+
+        self.history.append(result)
+        self.pointer += 1
+        self.screen = result
+        return result
+        
+    def invert(self) -> list:
+        rows, columns = len(self.screen), len(self.screen[0])
+        result = [[0]*columns for _ in range(rows)]
+        for i in range(rows):
+            for j in range(columns):
+                element = self.screen[i][j]
+                result[i][j] = 9-element
+
+        self.history.append(result)
+        self.pointer += 1
+        self.screen = result
+        return result
+    
+    def ascii_art(self) -> str:
+        result = ""
+        for row in self.screen:
+            for element in row:
+                result += self.ascii_values[element]
+            result += "\n"
         return result
 
     def __str__(self) -> str:
