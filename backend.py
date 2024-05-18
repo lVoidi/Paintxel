@@ -16,14 +16,19 @@ class PaintxelCanvas:
         # cada vez que hay un cambio
         self.modified_screen = []
         self.previous_screen = screen
+        
+        self.show_modified = False
     
-    def get_transposed(self) -> list:
+    def rotate_left(self) -> list:
+        """
+        Rota a la izquierda la matriz
+        """
         rows, columns = len(self.screen), len(self.screen[0])
         new = [[0]*rows for _ in range(columns)]
 
         for i in range(rows):
             for j in range(columns):
-                new[j][i] = self.screen[i][j]
+                new[j][i] = self.screen[i][columns-1-j]
 
         if self.modified_screen:
             self.previous_screen = self.modified_screen
@@ -32,12 +37,39 @@ class PaintxelCanvas:
         self.history.append(self.previous_screen)
 
         return new
+
+    def rotate_right(self) -> list:
+        """
+        Rota a la derecha la matriz
+        """
+        rows, columns = len(self.screen), len(self.screen[0])
+        new = [[0]*rows for _ in range(columns)]
+        
+        result = []
+
+        for i in range(rows):
+            for j in range(columns):
+                new[j][i] = self.screen[i][j]
+        
+        for element in new:
+            result.append(list(reversed(element)))
+
+        if self.modified_screen:
+            self.previous_screen = self.modified_screen
+
+        self.modified_screen = result
+        self.history.append(self.previous_screen)
+
+        return result
     
-    def show_mat(self) -> str:
+    def __str__(self) -> str:
+        """
+        Imprime la matriz de la pantalla
+        """
         matr = "["
         matr_to_print = self.screen 
         
-        if self.modified_screen:
+        if self.modified_screen and self.show_modified:
             matr_to_print = self.modified_screen
 
         rows, columns = len(matr_to_print), len(matr_to_print[0])
@@ -56,8 +88,11 @@ class PaintxelCanvas:
                     matr += f" {matr_to_print[i][j]} "
         return matr
     
+    
+    
 
-# Interfaz para probar el backend, testeo de la traspuesta
+
+# Interfaz para probar el backend, testeo de rotar a la izquierda y derecha
 if __name__ == "__main__":
     screen = PaintxelCanvas(
         screen=[
@@ -67,6 +102,9 @@ if __name__ == "__main__":
             [1, 3, 5, 6, 1],
         ]
     )
-    screen.get_transposed()
-    print(screen.show_mat())
-
+    print(f"Pantalla sin modificar:\n{str(screen)}")
+    screen.show_modified = True
+    screen.rotate_right()
+    print(f"Rotada a la derecha:\n{str(screen)}")
+    screen.rotate_left()
+    print(f"Rotada a la izquierda:\n{str(screen)}")
