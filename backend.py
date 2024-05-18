@@ -82,6 +82,28 @@ class PaintxelCanvas:
         self.screen = result
 
         return result
+    
+    def restore(self) -> list:
+        result = []
+        
+        if self.pointer > 0:
+            self.pointer -= 1
+
+        self.screen = self.history[self.pointer]
+        result = self.screen
+
+        return result
+
+    def redo(self) -> list:
+        result = []
+        
+        if self.pointer < len(self.history) - 1:
+            self.pointer += 1
+
+        self.screen = self.history[self.pointer]
+        result = self.screen
+
+        return result
 
     def __str__(self) -> str:
         """
@@ -126,3 +148,8 @@ if __name__ == "__main__":
     print(f"Reflexión horizontal: \n{str(screen)}" )
     screen.vertical_reflex()
     print(f"Reflexión vertical: \n{str(screen)}" )
+    screen.restore()
+    screen.restore()
+    print(f"Después de 2 restores: \n{str(screen)}")
+    screen.redo()
+    print(f"Después de redo: \n{str(screen)}")
