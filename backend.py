@@ -138,6 +138,33 @@ class PaintxelCanvas:
                 result += self.ascii_values[element]
             result += "\n"
         return result
+    
+    
+    def save_image_as(self, name) -> None:
+        with open(f"{name}.txt", "w") as file:
+            result = ""
+            for row in self.screen:
+                for index, element in enumerate(row):
+                    result += f"{element}," if index < len(row)-1 else f"{element}"
+                result += "\n"
+            file.write(result)
+    
+    def load_image(self, name) -> list:
+        try:
+            with open(f"{name}.txt", "r") as file:
+                rows = file.read().split()
+                self.screen = []
+                for row in rows:
+                    auxiliar_row = []
+                    elements = row.split(",")
+                    for element in elements:
+                        auxiliar_row.append(int(element))
+                    self.screen.append(auxiliar_row)
+                return self.screen
+        except FileNotFoundError:
+            return []
+
+
 
     def __str__(self) -> str:
         """
