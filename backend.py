@@ -17,6 +17,7 @@ class PaintxelCanvas:
         self.modified_screen = []
         self.previous_screen = screen
         
+        # Poner en true para que la función de __str__ muestre la matriz modificada en vez de la pantalla normal
         self.show_modified = False
     
     def rotate_left(self) -> list:
@@ -45,14 +46,20 @@ class PaintxelCanvas:
         rows, columns = len(self.screen), len(self.screen[0])
         new = [[0]*rows for _ in range(columns)]
         
-        result = []
-
+        result = [[0]*rows for _ in range(columns)]
+        
+        # Obtiene la transpuesta de la matriz
         for i in range(rows):
             for j in range(columns):
                 new[j][i] = self.screen[i][j]
         
-        for element in new:
-            result.append(list(reversed(element)))
+        # La transpuesta NO es una rotación a la derecha. Así que se 
+        # crea una nueva matriz que va a tener el reverso de cada 
+        # fila de la transpuesta (rotación a la derecha).
+        for i in range(columns):
+            for j in range(rows):
+                result[i][j] = new[i][rows-1-j]
+        
 
         if self.modified_screen:
             self.previous_screen = self.modified_screen
