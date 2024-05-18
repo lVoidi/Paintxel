@@ -9,7 +9,7 @@ class PaintxelCanvas:
         self.screen = screen
         
         # Historial de cambios a la pantalla 
-        self.history = []
+        self.history = [screen]
         self.pointer = 0 
     
     def rotate_left(self) -> list:
@@ -23,7 +23,7 @@ class PaintxelCanvas:
             for j in range(columns):
                 new[j][i] = self.screen[i][columns-1-j]
 
-        self.history.append(self.screen)
+        self.history.append(new)
         self.pointer += 1
         self.screen = new
 
@@ -51,7 +51,7 @@ class PaintxelCanvas:
                 result[i][j] = new[i][rows-1-j]
         
 
-        self.history.append(self.screen)
+        self.history.append(result)
         self.pointer += 1
         self.screen = result
 
@@ -65,7 +65,7 @@ class PaintxelCanvas:
             for j in range(columns):
                 result[i][columns-1-j] = self.screen[i][j]
         
-        self.history.append(self.screen)
+        self.history.append(result)
         self.pointer += 1
         self.screen = result
 
@@ -77,13 +77,13 @@ class PaintxelCanvas:
         for row in range(rows):
             result[rows-1-row] = self.screen[row]
         
-        self.history.append(self.screen)
+        self.history.append(result)
         self.pointer += 1
         self.screen = result
 
         return result
     
-    def restore(self) -> list:
+    def undo(self) -> list:
         result = []
         
         if self.pointer > 0:
@@ -127,29 +127,3 @@ class PaintxelCanvas:
                 else:
                     matr += f" {matr_to_print[i][j]} "
         return matr
-    
-
-# Interfaz para probar el backend, testeo de rotar a la izquierda y derecha
-if __name__ == "__main__":
-    screen = PaintxelCanvas(
-        screen=[
-            [1, 2, 5, 6, 1],
-            [3, 2, 5, 6, 1],
-            [2, 2, 6, 6, 1],
-            [1, 3, 5, 6, 1],
-        ]
-    )
-    print(f"Pantalla sin modificar:\n{str(screen)}")
-    screen.rotate_right()
-    print(f"Rotada a la derecha:\n{str(screen)}")
-    screen.rotate_left()
-    print(f"Rotada a la izquierda:\n{str(screen)}")
-    screen.horizontal_reflex()
-    print(f"Reflexión horizontal: \n{str(screen)}" )
-    screen.vertical_reflex()
-    print(f"Reflexión vertical: \n{str(screen)}" )
-    screen.restore()
-    screen.restore()
-    print(f"Después de 2 restores: \n{str(screen)}")
-    screen.redo()
-    print(f"Después de redo: \n{str(screen)}")
