@@ -11,14 +11,6 @@ class PaintxelCanvas:
         # Historial de cambios a la pantalla 
         self.history = []
         self.last = 0 
-        
-        # Esta es la pantalla modificada actual. Esta se agrega a self.history 
-        # cada vez que hay un cambio
-        self.modified_screen = []
-        self.previous_screen = screen
-        
-        # Poner en true para que la función de __str__ muestre la matriz modificada en vez de la pantalla normal
-        self.show_modified = False
     
     def rotate_left(self) -> list:
         """
@@ -31,11 +23,8 @@ class PaintxelCanvas:
             for j in range(columns):
                 new[j][i] = self.screen[i][columns-1-j]
 
-        if self.modified_screen:
-            self.previous_screen = self.modified_screen
-
-        self.modified_screen = new
-        self.history.append(self.previous_screen)
+        self.history.append(self.screen)
+        self.screen = new
 
         return new
 
@@ -61,23 +50,20 @@ class PaintxelCanvas:
                 result[i][j] = new[i][rows-1-j]
         
 
-        if self.modified_screen:
-            self.previous_screen = self.modified_screen
-
-        self.modified_screen = result
-        self.history.append(self.previous_screen)
+        self.history.append(self.screen)
+        self.screen = result
 
         return result
     
+    def vertical_reflex(self) -> list:
+        return []
+
     def __str__(self) -> str:
         """
         Imprime la matriz de la pantalla
         """
         matr = "["
         matr_to_print = self.screen 
-        
-        if self.modified_screen and self.show_modified:
-            matr_to_print = self.modified_screen
 
         rows, columns = len(matr_to_print), len(matr_to_print[0])
         
@@ -95,9 +81,6 @@ class PaintxelCanvas:
                     matr += f" {matr_to_print[i][j]} "
         return matr
     
-    
-    
-
 
 # Interfaz para probar el backend, testeo de rotar a la izquierda y derecha
 if __name__ == "__main__":
@@ -110,8 +93,12 @@ if __name__ == "__main__":
         ]
     )
     print(f"Pantalla sin modificar:\n{str(screen)}")
-    screen.show_modified = True
     screen.rotate_right()
     print(f"Rotada a la derecha:\n{str(screen)}")
     screen.rotate_left()
     print(f"Rotada a la izquierda:\n{str(screen)}")
+    screen.rotate_left()
+    print(f"Rotada a la izquierda^2:\n{str(screen)}")
+    screen.rotate_left()
+    print(f"Rotada a la izquierda^3:\n{str(screen)}")
+    print(f"{screen.history}")
