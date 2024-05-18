@@ -7,7 +7,7 @@ class PaintxelCanvas:
         """
         # Pantalla que muestra
         self.screen = screen
-        self.ascii_values = ["", ".", ":", "-", "=", "¡", "&", "$", "%", "@"]
+        self.ascii_values = [" ", ".", ":", "-", "=", "¡", "&", "$", "%", "@"]
         # Historial de cambios a la pantalla 
         self.history = [screen]
         self.pointer = 0 
