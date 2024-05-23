@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter.colorchooser import askcolor
 
 class FrontApp(tk.Tk):
     def __init__(self):
@@ -14,27 +15,41 @@ class FrontApp(tk.Tk):
 
 
 
-        #Creacion de todos los botones
+        #Creacion de todos los botones de colores
         self.blanco = tk.Button(self, bg ="#ffffff", width=10, height=3)
         self.blanco.grid(column=3, row=1)
+        self.blanco.config(command=lambda: self.set_color("#ffffff"))
         self.rosado = tk.Button(self, bg ="#ffaaaa", width=10, height=3)
         self.rosado.grid(column=3, row=2)
-        self.verde = tk.Button(self, bg ="#aaffaa", width=10, height=3)
-        self.btn3.grid(column=3, row=3)
-        self.btn4 = tk.Button(self, bg ="#aaaaff", width=10, height=3)
-        self.btn4.grid(column=3, row=4)
-        self.btn5 = tk.Button(self, bg ="#00ff00", width=10, height=3)
-        self.btn5.grid(column=3, row=5)
-        self.btn6 = tk.Button(self, bg ="#ff00ff", width=10, height=3)
-        self.btn6.grid(column=3, row=6)
-        self.btn7 = tk.Button(self, bg ="#ff0000", width=10, height=3)
-        self.btn7.grid(column=3, row=7)
-        self.btn8 = tk.Button(self, bg ="#0000ff", width=10, height=3)
-        self.btn8.grid(column=3, row=8)
-        self.btn9 = tk.Button(self, bg ="#000077", width=10, height=3)
-        self.btn9.grid(column=3, row=9)
-        self.btn10 = tk.Button(self, bg ="#000000", width=10, height=3)
-        self.btn10.grid(column=3, row=10)
+        self.rosado.config(command=lambda: self.set_color("#ffaaaa"))
+        self.verdeclaro = tk.Button(self, bg ="#aaffaa", width=10, height=3)
+        self.verdeclaro.grid(column=3, row=3)
+        self.verdeclaro.config(command=lambda: self.set_color("#aaffaa"))
+        self.celeste = tk.Button(self, bg ="#aaaaff", width=10, height=3)
+        self.celeste.grid(column=3, row=4)
+        self.celeste.config(command=lambda: self.set_color("#aaaaff"))
+        self.verde = tk.Button(self, bg ="#00ff00", width=10, height=3)
+        self.verde.grid(column=3, row=5)
+        self.verde.config(command=lambda: self.set_color("#00ff00"))
+        self.fucsia = tk.Button(self, bg ="#ff00ff", width=10, height=3)
+        self.fucsia.grid(column=3, row=6)
+        self.fucsia.config(command=lambda: self.set_color("#ff00ff"))
+        self.rojo = tk.Button(self, bg ="#ff0000", width=10, height=3)
+        self.rojo.grid(column=3, row=7)
+        self.rojo.config(command=lambda: self.set_color("#ff0000"))
+        self.azul = tk.Button(self, bg ="#0000ff", width=10, height=3)
+        self.azul.grid(column=3, row=8)
+        self.azul.config(command=lambda: self.set_color("#0000ff"))
+        self.azuloscuro = tk.Button(self, bg ="#000077", width=10, height=3)
+        self.azuloscuro.grid(column=3, row=9)
+        self.azuloscuro.config(command=lambda: self.set_color("#000077"))
+        self.negro = tk.Button(self, bg ="#000000", width=10, height=3)
+        self.negro.grid(column=3, row=10)
+        self.negro.config(command=lambda: self.set_color("#000000"))
+
+
+
+        #Botones para opciones
         self.btn11 = tk.Button(self, text = "Prueba", bg ="#000000", fg="#ffffff", width=10, height=3)
         self.btn11.grid(column=0, row=1)
         self.btn12 = tk.Button(self, text = "Prueba", bg ="#000000", fg="#ffffff", width=10, height=3)
@@ -59,17 +74,27 @@ class FrontApp(tk.Tk):
 
 
 
-
-
-
-
-
         self.canvas = tk.Canvas(self, bg= "#ffffff", width=600, height=600)
         self.canvas.grid(column=1, row=1, rowspan= 10, sticky="nsew")
 
+
+        self.color_matrix = [[None] * 24 for _ in range(24)]
         for i in range(24):
             for j in range(24):
-                self.canvas.create_rectangle(i*25, j *25, i*25+25, j*25+25)
+                self.color_matrix[i][j] = "#ffffff"
+                self.canvas.create_rectangle(i*25, j *25, i*25+25, j*25+25, fill="#ffffff")
+        
+        self.canvas.bind("<Button-1>", self.paint_square)
+
+
+    def set_color(self, color):
+       self.selected_color = color
+
+
+    def paint_square(self, event):
+        x, y = event.x // 25, event.y // 25
+        self.color_matrix[x][y] = self.selected_color
+        self.canvas.create_rectangle(x * 25, y * 25, x * 25 + 25, y * 25 + 25, fill=self.selected_color)
 
 app = FrontApp()
 app.mainloop()
