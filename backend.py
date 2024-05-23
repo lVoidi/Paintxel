@@ -10,8 +10,6 @@ class PaintxelCanvas:
         self.screen = screen
         self.ascii_values = [" ", ".", ":", "-", "=", "¡", "&", "$", "%", "@"]
         # Historial de cambios a la pantalla
-        self.history = [screen]
-        self.pointer = 0
 
     def rotate_left(self) -> list:
         """
@@ -25,8 +23,6 @@ class PaintxelCanvas:
             for j in range(columns):
                 new[j][i] = self.screen[i][columns - 1 - j]
 
-        self.history.append(new)
-        self.pointer += 1
         self.screen = new
 
         return new
@@ -53,8 +49,6 @@ class PaintxelCanvas:
             for j in range(rows):
                 result[i][j] = new[i][rows - 1 - j]
 
-        self.history.append(result)
-        self.pointer += 1
         self.screen = result
 
         return result
@@ -73,8 +67,6 @@ class PaintxelCanvas:
             for j in range(columns):
                 result[i][columns - 1 - j] = self.screen[i][j]
 
-        self.history.append(result)
-        self.pointer += 1
         self.screen = result
 
         return result
@@ -91,42 +83,7 @@ class PaintxelCanvas:
         for row in range(rows):
             result[rows - 1 - row] = self.screen[row]
 
-        self.history.append(result)
-        self.pointer += 1
         self.screen = result
-
-        return result
-
-    def undo(self) -> list:
-        """
-        Recupera el anterior instante de la pantalla
-        -> list
-        """
-        result = []
-
-        # Si el puntero está en cero, no se va a mover
-        if self.pointer > 0:
-            self.pointer -= 1
-
-        self.screen = self.history[self.pointer]
-        result = self.screen
-
-        return result
-
-    def redo(self) -> list:
-        """
-        Recupera el siguiente instante de la pantalla, si es que existe
-        -> list
-        """
-        result = []
-
-        # Si el puntero es el último indice del historial,
-        # no va a ser aumentado
-        if self.pointer < len(self.history) - 1:
-            self.pointer += 1
-
-        self.screen = self.history[self.pointer]
-        result = self.screen
 
         return result
 
@@ -142,8 +99,6 @@ class PaintxelCanvas:
                 element = self.screen[i][j]
                 result[i][j] = 0 if element <= 4 else 9
 
-        self.history.append(result)
-        self.pointer += 1
         self.screen = result
         return result
 
@@ -160,8 +115,6 @@ class PaintxelCanvas:
                 element = self.screen[i][j]
                 result[i][j] = 9 - element
 
-        self.history.append(result)
-        self.pointer += 1
         self.screen = result
         return result
 
