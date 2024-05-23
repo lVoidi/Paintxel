@@ -1,5 +1,6 @@
-import tkinter as tk
 from tkinter.colorchooser import askcolor
+import tkinter as tk
+from threading import Thread
 
 class FrontApp(tk.Tk):
     def __init__(self):
@@ -7,13 +8,12 @@ class FrontApp(tk.Tk):
         self.config(bg = "#ffffff")
         self.geometry("765x750")
         self.resizable(False, False)
-
+        self.selected_color = "#ffffff"
+        self.painting = False
         self.canvas_top = tk.Canvas(self, bg="#9b9b9b", width=700, height=50)
         self.canvas_top.grid(column=0, row=0, columnspan=4,sticky="nsew")
         self.canvas_bottom = tk.Canvas(self, bg="#9b9b9b", width=700, height=50)
         self.canvas_bottom.grid(column=0, row=11, columnspan=4,sticky="nsew")
-
-
 
         #Creacion de todos los botones de colores
         self.blanco = tk.Button(self, bg ="#ffffff", width=10, height=3)
@@ -47,8 +47,6 @@ class FrontApp(tk.Tk):
         self.negro.grid(column=3, row=10)
         self.negro.config(command=lambda: self.set_color("#000000"))
 
-
-
         #Botones para opciones
         self.btn11 = tk.Button(self, text = "Prueba", bg ="#000000", fg="#ffffff", width=10, height=3)
         self.btn11.grid(column=0, row=1)
@@ -72,29 +70,51 @@ class FrontApp(tk.Tk):
         self.btn20.grid(column=0, row=10)
 
 
-
-
         self.canvas = tk.Canvas(self, bg= "#ffffff", width=600, height=600)
         self.canvas.grid(column=1, row=1, rowspan= 10, sticky="nsew")
+        
+        self.mouse_x = 0 
+        self.mouse_y = 0
 
-
-        self.color_matrix = [[None] * 24 for _ in range(24)]
+        self.color_matrix = [[""] * 24 for _ in range(24)]
+        self.rectangles = [[0] * 24 for _ in range(24)]
         for i in range(24):
             for j in range(24):
                 self.color_matrix[i][j] = "#ffffff"
-                self.canvas.create_rectangle(i*25, j *25, i*25+25, j*25+25, fill="#ffffff")
+                rect = self.canvas.create_rectangle(i*25, j *25, i*25+25, j*25+25, fill="#ffffff")
+                self.rectangles[i][j] = rect
         
-        self.canvas.bind("<Button-1>", self.paint_square)
+        self.canvas.bind("<ButtonPress-1>", self.create_painting_thread)
+        self.canvas.bind("<B1-Motion>", self.on_mouse_motion)
+        self.canvas.bind("<ButtonRelease-1>", self.on_button_release)
 
 
     def set_color(self, color):
        self.selected_color = color
+    
+    def on_mouse_motion(self, event):
+        self.mouse_x, self.mouse_y = event.x // 25, event.y // 25
+        print(self.mouse_x, self.mouse_y)
 
 
+    def create_painting_thread(self, event):
+        thread = Thread(target=self.paint_square, args=(event,))
+        thread.start()
+
+    
     def paint_square(self, event):
-        x, y = event.x // 25, event.y // 25
-        self.color_matrix[x][y] = self.selected_color
-        self.canvas.create_rectangle(x * 25, y * 25, x * 25 + 25, y * 25 + 25, fill=self.selected_color)
+        self.painting = True
+        print("Acá")
+        self.mouse_x, self.mouse_y = event.x // 25, event.y // 25
+        while self.painting:
+            print("While")
+            self.color_matrix[self.mouse_x][self.mouse_y] = self.selected_color
+            self.canvas.itemconfig(self.rectangles[self.mouse_x][self.mouse_y], fill=self.selected_color)
+        print(f"{self.painting=}")
+
+
+    def on_button_release(self, _):
+        self.painting = False
 
 app = FrontApp()
 app.mainloop()
