@@ -12,10 +12,13 @@ class FrontApp(tk.Tk):
         self.resizable(False, False)
         self.selected_color = 0
         self.painting = False
+        self.do_draw_rectangle = False
+        self.do_draw_circle = False
         self.canvas_top = tk.Canvas(self, bg="#9b9b9b", width=700, height=50)
         self.canvas_top.grid(column=0, row=0, columnspan=4, sticky="nsew")
         self.canvas_bottom = tk.Canvas(self, bg="#9b9b9b", width=700, height=50)
         self.canvas_bottom.grid(column=0, row=11, columnspan=4, sticky="nsew")
+        self.circle_matrix = []
         self.cover = 0
         self.zoomed = []
         self.zoomed_canvas = None
@@ -146,11 +149,11 @@ class FrontApp(tk.Tk):
         )
         self.btn17.grid(column=0, row=7)
         self.btn18 = tk.Button(
-            self, text="Cuadrado", bg="#000000", fg="#ffffff", width=10, height=3
+            self, text="Cuadrado", bg="#000000", fg="#ffffff", width=10, height=3, command=self.on_draw_rectangle
         )
         self.btn18.grid(column=0, row=8)
         self.btn19 = tk.Button(
-            self, text="Triángulo", bg="#000000", fg="#ffffff", width=10, height=3
+            self, text="Circulo", bg="#000000", fg="#ffffff", width=10, height=3, command=self.on_draw_circle
         )
         self.btn19.grid(column=0, row=9)
         self.btn20 = tk.Button(
@@ -228,12 +231,87 @@ class FrontApp(tk.Tk):
         if self.do_zoom_in:
             thread = Thread(target=self.zoom_in, args=(event,))
             thread.start()
+        elif self.do_draw_rectangle:
+            thread = Thread(target=self.draw_rectangle, args=(event,))
+            thread.start()
+        elif self.do_draw_circle:
+            thread = Thread(target=self.draw_circle, args=(event,))
+            thread.start()
         else:
             thread = Thread(target=self.paint_square, args=(event,))
             thread.start()
+    
+    def on_draw_rectangle(self):
+        self.do_draw_rectangle = True
 
+    def on_draw_circle(self):
+        self.do_draw_circle = True
+    
     def on_zoom_in(self):
         self.do_zoom_in = True
+    
+    
+    def draw_circle(self, event):
+        x, y = event.x//25, event.y//25 
+        oval = self.canvas.create_oval(x*25, y*25, x*25 + 25, y*25 + 25, fill=self.colors[self.selected_color])
+        coords = [0, 0, 0, 0]
+        while self.do_draw_circle:
+            x0, y0, x1, y1 = 0, 0, 0, 0
+            if self.mouse_x > x:
+                x0, x1 = x, self.mouse_x
+            elif self.mouse_x <= x:
+                x0, x1 = self.mouse_x, x
+            
+            if self.mouse_y > y:
+                y0, y1 = y, self.mouse_y
+            elif self.mouse_y <= y: 
+                y0, y1 = self.mouse_y, y
+            
+            if abs(x1 - x0) == abs(y1 - y0):
+                coords = [x0, y0, x1, y1]
+
+                self.canvas.coords(oval, x0*25, y0*25, x1*25 + 25, y1*25 + 25)
+        
+        self.canvas.delete(oval)
+        
+        x0, y0, x1, y1 = coords
+        print(coords)
+        radio = abs(x1 - x0)
+        xcnt, ycnt = (x0 + x1) / 2, (y0 + y1) / 2
+        for i in range(24):
+            for j in range(24):
+                dist = ((i - xcnt)**2 + (j - ycnt)**2) ** (1/2)
+                if dist < radio:
+                    self.program_matrix.screen[j][i] = self.selected_color
+
+        self.update_canvas()
+
+    def draw_rectangle(self, event):
+        x, y = event.x//25, event.y//25 
+        rectangle = self.canvas.create_rectangle(x*25, y*25, x*25 + 25, y*25 + 25, fill=self.colors[self.selected_color])
+        coords = []
+        while self.do_draw_rectangle:
+            x0, y0, x1, y1 = 0, 0, 0, 0
+            if self.mouse_x > x:
+                x0, x1 = x, self.mouse_x
+            elif self.mouse_x <= x:
+                x0, x1 = self.mouse_x, x
+            
+            if self.mouse_y > y:
+                y0, y1 = y, self.mouse_y
+            elif self.mouse_y <= y: 
+                y0, y1 = self.mouse_y, y
+
+            coords = [x0, y0, x1, y1]
+
+            self.canvas.coords(rectangle, x*25, y*25, self.mouse_x*25 + 25, self.mouse_y*25 + 25)
+        
+        self.canvas.delete(rectangle)
+        for i in range(24):
+            for j in range(24):
+                if coords[0] <= j <= coords[2] and coords[1] <= i <= coords[3]:
+                    self.program_matrix.screen[i][j] = self.selected_color
+        self.update_canvas()
 
     def zoom_in(self, event):
         x, y = event.x//25, event.y//25 
@@ -293,6 +371,8 @@ class FrontApp(tk.Tk):
     def on_button_release(self, _):
         self.painting = False
         self.do_zoom_in = False
+        self.do_draw_rectangle = False
+        self.do_draw_circle = False
         self.program_matrix.screen = self.program_matrix.screen
         print(str(self.program_matrix))
 
