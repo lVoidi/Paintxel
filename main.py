@@ -1,3 +1,5 @@
+from frontend import FrontApp
 
-class Program:
-    pass
+
+app = FrontApp()
+app.mainloop()

@@ -1,3 +1,4 @@
+from re import L
 from threading import Thread
 from backend import PaintxelCanvas
 import tkinter as tk
@@ -9,13 +10,15 @@ class FrontApp(tk.Tk):
         self.config(bg="#ffffff")
         self.geometry("765x750")
         self.resizable(False, False)
-        self.selected_color = "#ffffff"
+        self.selected_color = 0
         self.painting = False
         self.canvas_top = tk.Canvas(self, bg="#9b9b9b", width=700, height=50)
         self.canvas_top.grid(column=0, row=0, columnspan=4, sticky="nsew")
         self.canvas_bottom = tk.Canvas(self, bg="#9b9b9b", width=700, height=50)
         self.canvas_bottom.grid(column=0, row=11, columnspan=4, sticky="nsew")
-
+        self.cover = 0
+        self.zoomed = []
+        self.zoomed_canvas = None
         self.colors = [
             "#ffffff",
             "#ffaaaa",
@@ -156,7 +159,7 @@ class FrontApp(tk.Tk):
         self.btn20.grid(column=0, row=10)
 
         self.btn21 = tk.Button(
-            self, text="Zoom out", bg="#000000", fg="#ffffff", width=10, height=3
+            self, text="Zoom out", bg="#000000", fg="#ffffff", width=10, height=3, command=self.on_zoom_out
         )
         self.btn21.grid(column=0, row=11)
 
@@ -170,7 +173,6 @@ class FrontApp(tk.Tk):
 
         self.rectangles = [[0] * 24 for _ in range(24)]
         self.program_matrix = PaintxelCanvas([[0] * 24 for _ in range(24)])
-        self.screen = self.program_matrix.screen
         for i in range(24):
             for j in range(24):
                 rect = self.canvas.create_rectangle(
@@ -210,12 +212,17 @@ class FrontApp(tk.Tk):
         self.update_canvas()
 
     def clean_screen(self):
-        self.screen = [[0] * 24 for _ in range(24)]
-        self.program_matrix.screen = self.screen
+        self.program_matrix.screen = [[0] * 24 for _ in range(24)]
+        self.program_matrix.screen = self.program_matrix.screen
         self.update_canvas()
 
     def on_mouse_motion(self, event):
         self.mouse_x, self.mouse_y = event.x // 25, event.y // 25
+
+    def on_zoom_out(self):
+        self.canvas.delete(self.cover)
+        self.zoomed_canvas.destroy()
+        self.canvas.grid(column=1, row=1, rowspan=10, sticky="nsew")
 
     def on_button_press(self, event):
         if self.do_zoom_in:
@@ -231,17 +238,53 @@ class FrontApp(tk.Tk):
     def zoom_in(self, event):
         x, y = event.x//25, event.y//25 
         rectangle = self.canvas.create_rectangle(x*25, y*25, x*25 + 25, y*25 + 25, fill="#00ffaa")
+        coords = []
         while self.do_zoom_in:
-            self.mouse_x, self.mouse_y
+            x0, y0, x1, y1 = 0, 0, 0, 0
+            if self.mouse_x > x:
+                x0, x1 = x, self.mouse_x
+            elif self.mouse_x <= x:
+                x0, x1 = self.mouse_x, x
+            
+            if self.mouse_y > y:
+                y0, y1 = y, self.mouse_y
+            elif self.mouse_y <= y: 
+                y0, y1 = self.mouse_y, y
+
+            coords = [x0, y0, x1, y1]
+
             self.canvas.coords(rectangle, x*25, y*25, self.mouse_x*25 + 25, self.mouse_y*25 + 25)
+
+        self.zoomed = []
+        self.zoomed_canvas = tk.Canvas(self, bg="#ffffff", width=600, height=600)
+        for i in range(24):
+            row = []
+            for j in range(24):
+                if coords[0] <= j <= coords[2] and coords[1] <= i <= coords[3]:
+                    color = self.program_matrix.screen[i][j]
+                    row.append(color)
+                else:
+                    continue
+            if row:
+                self.zoomed.append(row)
+        print(self.zoomed)
+        size_y, size_x = 600/len(self.zoomed[0]), 600/len(self.zoomed)
+
+        for i in range(len(self.zoomed)):
+            for j in range(len(self.zoomed[0])):
+                color = self.zoomed[i][j]
+                self.zoomed_canvas.create_rectangle(j*size_y, i*size_x, j*size_y + size_y, i*size_x + size_x, fill=self.colors[color])
         self.canvas.delete(rectangle)
+        self.cover = self.canvas.create_rectangle(0, 0, 600, 600, fill="#ffffff")
+        self.canvas.grid_remove()
+        self.zoomed_canvas.grid(column=1, row=1, rowspan=10, sticky="nsew")
 
 
     def paint_square(self, event):
         self.painting = True
         self.mouse_x, self.mouse_y = event.x // 25, event.y // 25
         while self.painting:
-            self.screen[self.mouse_y][self.mouse_x] = self.selected_color
+            self.program_matrix.screen[self.mouse_y][self.mouse_x] = self.selected_color
             self.canvas.itemconfig(
                 self.rectangles[self.mouse_x][self.mouse_y],
                 fill=self.colors[self.selected_color],
@@ -250,17 +293,14 @@ class FrontApp(tk.Tk):
     def on_button_release(self, _):
         self.painting = False
         self.do_zoom_in = False
-        self.screen = self.program_matrix.screen
+        self.program_matrix.screen = self.program_matrix.screen
         print(str(self.program_matrix))
 
     def update_canvas(self):
-        self.screen = self.program_matrix.screen
+        self.program_matrix.screen = self.program_matrix.screen
         for i in range(len(self.rectangles)):
             for j in range(len(self.rectangles[0])):
                 self.canvas.itemconfig(
-                    self.rectangles[i][j], fill=self.colors[self.screen[j][i]]
+                    self.rectangles[i][j], fill=self.colors[self.program_matrix.screen[j][i]]
                 )
 
-
-app = FrontApp()
-app.mainloop()
