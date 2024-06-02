@@ -268,7 +268,7 @@ class FrontApp(tk.Tk):
                 y0, y1 = self.mouse_y, y
             
             if abs(x1 - x0) == abs(y1 - y0):
-                coords = [x0, y0, x1, y1]
+                coords = [x0 + 1, y0+1, x1-1, y1-1]
 
                 self.canvas.coords(oval, x0*25, y0*25, x1*25 + 25, y1*25 + 25)
         
