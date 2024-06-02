@@ -1,6 +1,7 @@
-from re import L
-from threading import Thread
+from tkinter import filedialog as fd
 from backend import PaintxelCanvas
+from tkinter import messagebox
+from threading import Thread
 import tkinter as tk
 
 
@@ -8,7 +9,7 @@ class FrontApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.config(bg="#ffffff")
-        self.geometry("765x750")
+        self.geometry("765x790")
         self.resizable(False, False)
         self.selected_color = 0
         self.painting = False
@@ -165,9 +166,41 @@ class FrontApp(tk.Tk):
             self, text="Zoom out", bg="#000000", fg="#ffffff", width=10, height=3, command=self.on_zoom_out
         )
         self.btn21.grid(column=0, row=11)
+        
 
+        save_as = tk.Button(
+            self, 
+            text="Guardar",
+            bg="#000000",
+            fg="#ffffff",
+            width=10,
+            height=3,
+            command=self.save_file_as
+        )
+        save_as.grid(column=0, row=12)
+        load = tk.Button(
+            self,
+            text="Cargar",
+            bg="#000000",
+            fg="#ffffff",
+            width=10,
+            height=3,
+            command=self.load_file
+        )
+        load.grid(column=0, row=13)
+
+        show = tk.Button(
+            self,
+            text="Mostrar",
+            bg="#000000",
+            fg="#ffffff",
+            width=10,
+            height=3,
+            command=self.show_thread
+        )
+        show.grid(column=0, row=14)
         self.canvas = tk.Canvas(self, bg="#ffffff", width=600, height=600)
-        self.canvas.grid(column=1, row=1, rowspan=10, sticky="nsew")
+        self.canvas.grid(column=1, row=1, rowspan=13, sticky="nsew")
 
         self.mouse_x = 0
         self.mouse_y = 0
@@ -186,6 +219,52 @@ class FrontApp(tk.Tk):
         self.canvas.bind("<ButtonPress-1>", self.on_button_press)
         self.canvas.bind("<B1-Motion>", self.on_mouse_motion)
         self.canvas.bind("<ButtonRelease-1>", self.on_button_release)
+
+    
+    def save_file_as(self):
+        file = fd.asksaveasfilename(title="Nombre del archivo")
+        self.program_matrix.save_image_as(file)
+        messagebox.showinfo(title="Guardado con exito", message=f"Guardado en {file}")
+    
+    def show_thread(self):
+        thread = Thread(target=self.show_low_level_matrix)
+        thread.start()
+    
+    def show_low_level_matrix(self):
+        sub_window = tk.Toplevel(self)
+        sub_window.config(bg="#000000")
+        sub_window.resizable(False, False)
+        matrix, ascii_art = str(self.program_matrix), self.program_matrix.ascii_art()
+        matrix_textbox = tk.Label(
+            sub_window,
+            text=f"\n{matrix}\n",
+            fg="#ffffff",
+            bg="#000000"
+        )
+        ascii_art_textbox = tk.Label(
+            sub_window,
+            text=f"\n{ascii_art}\n",
+            fg="#ffffff",
+            bg="#000000"
+        )
+
+        matrix_textbox.pack()
+        ascii_art_textbox.pack()
+        while True:
+            matrix, ascii_art = str(self.program_matrix), self.program_matrix.ascii_art()
+            matrix_textbox["text"] = f"\n{matrix}\n"
+            ascii_art_textbox["text"] = f"\n{ascii_art}\n"
+
+
+    def load_file(self):
+        file = fd.askopenfilename(title="Elige el archivo txt")
+        try: 
+            self.program_matrix.load_image(file)
+            self.update_canvas()
+            messagebox.showinfo(title="Exito", message="Se ha abierto el archivo")
+        except FileNotFoundError:
+            messagebox.showerror(title="Error", message="No se ha encontrado el archivo")
+
 
     def set_color(self, color):
         self.selected_color = color
@@ -225,7 +304,7 @@ class FrontApp(tk.Tk):
     def on_zoom_out(self):
         self.canvas.delete(self.cover)
         self.zoomed_canvas.destroy()
-        self.canvas.grid(column=1, row=1, rowspan=10, sticky="nsew")
+        self.canvas.grid(column=1, row=1, rowspan=14, sticky="nsew")
 
     def on_button_press(self, event):
         if self.do_zoom_in:
@@ -355,7 +434,7 @@ class FrontApp(tk.Tk):
         self.canvas.delete(rectangle)
         self.cover = self.canvas.create_rectangle(0, 0, 600, 600, fill="#ffffff")
         self.canvas.grid_remove()
-        self.zoomed_canvas.grid(column=1, row=1, rowspan=10, sticky="nsew")
+        self.zoomed_canvas.grid(column=1, row=1, rowspan=14, sticky="nsew")
 
 
     def paint_square(self, event):

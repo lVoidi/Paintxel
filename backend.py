@@ -152,7 +152,7 @@ class PaintxelCanvas:
         -> list
         """
         try:
-            with open(f"{name}.txt", "r") as file:
+            with open(f"{name}", "r") as file:
                 rows = file.read().split()
                 self.screen = []
                 for row in rows:
