@@ -1,5 +1,15 @@
 from frontend import FrontApp
 
 
-app = FrontApp()
-app.mainloop()
+def main() -> None:
+    """
+    Inicializa la interfaz gráfica
+    :return: None 
+    :rtype: NoneType
+    """
+    app = FrontApp()
+    app.mainloop()
+
+
+if __name__ == "__main__":
+    main()
