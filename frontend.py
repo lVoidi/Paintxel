@@ -4,6 +4,9 @@ from tkinter import messagebox
 from threading import Thread
 import tkinter as tk
 
+SIZE: int = 75
+CSIZE: int = 1000
+BSIZE: int = CSIZE//SIZE
 
 class FrontApp(tk.Tk):
     """
@@ -20,7 +23,6 @@ class FrontApp(tk.Tk):
         super().__init__()
 
         self.config(bg="#ffffff")
-        self.geometry("765x790")
         self.resizable(False, False)
 
         self.selected_color: int = 0
@@ -232,27 +234,24 @@ class FrontApp(tk.Tk):
             command=self.show_thread
         )
 
-        self.canvas: tk.Canvas = tk.Canvas(self, bg="#ffffff", width=600, height=600)
+        self.canvas: tk.Canvas = tk.Canvas(self, bg="#ffffff", width=CSIZE, height=CSIZE)
 
         # Guarda las coordenadas del mouse en todo momento, mediante el evento de B1-Motion
         self.mouse_x: int = 0
         self.mouse_y: int = 0
 
         # Matriz que guarda las IDs de todos los rectangulos creados en self.canvas
-        self.rectangles: list[list[int]] = [[0] * 24 for _ in range(24)]
+        self.rectangles: list[list[int]] = [[0] * SIZE for _ in range(SIZE)]
 
         # Matriz del programa a partir de matriz con ceros, tamaño 24x24. Referenciar backend.py.
-        self.program_matrix: PaintxelCanvas = PaintxelCanvas(screen=[[0] * 24 for _ in range(24)])
-        for i in range(24):
-            for j in range(24):
+        self.program_matrix: PaintxelCanvas = PaintxelCanvas(screen=[[0] * SIZE for _ in range(SIZE)], size=SIZE)
+        for i in range(SIZE):
+            for j in range(SIZE):
                 rect: int = self.canvas.create_rectangle(
-                    i * 25, j * 25, i * 25 + 25, j * 25 + 25, fill="#ffffff"
+                    i * BSIZE, j * BSIZE, i * BSIZE + BSIZE, j * BSIZE + BSIZE, fill="#ffffff"
                 )
                 self.rectangles[i][j] = rect
         
-        # Posicionamiento de elementos por secciones
-        top_canvas.grid(column=0, row=0, columnspan=4, sticky="nsew")
-        bottom_canvas.grid(column=0, row=11, columnspan=4, sticky="nsew")
 
         white_button.grid(column=3, row=1)
         pink_button.grid(column=3, row=2)
@@ -280,8 +279,10 @@ class FrontApp(tk.Tk):
         save_as_button.grid(column=0, row=12)
         load_button.grid(column=0, row=13)
         show_button.grid(column=0, row=14)
+        
+        self.canvas_rowspan = 14
 
-        self.canvas.grid(column=1, row=1, rowspan=13, sticky="nsew")
+        self.canvas.grid(column=1, row=1, rowspan=self.canvas_rowspan, sticky="nsew")
         
         self.canvas.bind("<ButtonPress-1>", self.on_button_press)
         self.canvas.bind("<B1-Motion>", self.on_mouse_motion)
@@ -318,20 +319,25 @@ class FrontApp(tk.Tk):
         :return: None 
         :rtype: None
         """
-        sub_window: tk.Toplevel = tk.Toplevel(self)
-        sub_window.config(bg="#000000")
-        sub_window.resizable(False, False)
+        sub_window_matrix: tk.Toplevel = tk.Toplevel(self)
+        sub_window_matrix.config(bg="#000000")
+        sub_window_matrix.resizable(False, False)
         
+        sub_window_ascii_art: tk.Toplevel = tk.Toplevel(self)
+        sub_window_ascii_art.config(bg="#000000")
+        sub_window_ascii_art.resizable(False, False)
+
         matrix: str = str(self.program_matrix)
         ascii_art: str = self.program_matrix.ascii_art()
         matrix_textbox: tk.Label = tk.Label(
-            sub_window,
+            sub_window_matrix,
             text=f"\n{matrix}\n",
             fg="#ffffff",
-            bg="#000000"
+            bg="#000000",
+            font="Arial"
         )
         ascii_art_textbox: tk.Label = tk.Label(
-            sub_window,
+            sub_window_ascii_art,
             text=f"\n{ascii_art}\n",
             fg="#ffffff",
             bg="#000000"
@@ -402,7 +408,7 @@ class FrontApp(tk.Tk):
         :return: None 
         :rtype: None 
         """
-        self.mouse_x, self.mouse_y = event.x // 25, event.y // 25
+        self.mouse_x, self.mouse_y = event.x // BSIZE, event.y // BSIZE
 
     def on_zoom_out(self) -> None:
         """
@@ -414,7 +420,7 @@ class FrontApp(tk.Tk):
         """
         self.canvas.delete(self.cover)
         self.zoomed_canvas.destroy()
-        self.canvas.grid(column=1, row=1, rowspan=14, sticky="nsew")
+        self.canvas.grid(column=1, row=1, rowspan=self.canvas_rowspan, sticky="nsew")
 
     def on_button_press(self, event) -> None:
         """
@@ -481,9 +487,9 @@ class FrontApp(tk.Tk):
         :return: None 
         :rtype: None 
         """
-        x: int = event.x // 25
-        y: int = event.y // 25
-        oval: int = self.canvas.create_oval(x*25, y*25, x*25 + 25, y*25 + 25, fill=self.colors[self.selected_color])
+        x: int = event.x // BSIZE
+        y: int = event.y // BSIZE
+        oval: int = self.canvas.create_oval(x*BSIZE, y*BSIZE, x*BSIZE + BSIZE, y*BSIZE + BSIZE, fill=self.colors[self.selected_color])
         coords: list[int] = [0, 0, 0, 0]
         while self.do_draw_circle:
             # (x0, y0) es el punto inicial 
@@ -507,20 +513,20 @@ class FrontApp(tk.Tk):
 
             if abs(x1 - x0) == abs(y1 - y0):
                 coords = [x0, y0, x1, y1]
-                self.canvas.coords(oval, x0*25, y0*25, x1*25 + 25, y1*25 + 25)
+                self.canvas.coords(oval, x0*BSIZE, y0*BSIZE, x1*BSIZE + BSIZE, y1*BSIZE + BSIZE)
         
         self.canvas.delete(oval)
         
         x0, y0, x1, y1 = coords
         xcnt, ycnt = (x0 + x1) / 2, (y0 + y1) / 2
         radio: int = abs(x1 - x0)//2
-        for i in range(24):
-            for j in range(24):
+        for i in range(SIZE):
+            for j in range(SIZE):
                 dist: float = ((i - xcnt)**2 + (j - ycnt)**2) ** (1/2)
                 if dist <= radio:
                     self.program_matrix.screen[j][i] = self.selected_color
 
-        self.update_canvas()
+        self.update_canvas(*coords)
 
     def draw_rectangle(self, event) -> None:
         """
@@ -532,8 +538,8 @@ class FrontApp(tk.Tk):
         :return: None 
         :rtype: None 
         """
-        x, y = event.x//25, event.y//25 
-        rectangle: int = self.canvas.create_rectangle(x*25, y*25, x*25 + 25, y*25 + 25, fill=self.colors[self.selected_color])
+        x, y = event.x//BSIZE, event.y//BSIZE 
+        rectangle: int = self.canvas.create_rectangle(x*BSIZE, y*BSIZE, x*BSIZE + BSIZE, y*BSIZE + BSIZE, fill=self.colors[self.selected_color])
         coords: list[int] = []
         while self.do_draw_rectangle:
             x0, y0, x1, y1 = 0, 0, 0, 0
@@ -551,25 +557,25 @@ class FrontApp(tk.Tk):
 
             coords = [x0, y0, x1, y1]
 
-            self.canvas.coords(rectangle, x*25, y*25, self.mouse_x*25 + 25, self.mouse_y*25 + 25)
+            self.canvas.coords(rectangle, x*BSIZE, y*BSIZE, self.mouse_x*BSIZE + BSIZE, self.mouse_y*BSIZE + BSIZE)
         
         self.canvas.delete(rectangle)
-        for i in range(24):
-            for j in range(24):
+        for i in range(SIZE):
+            for j in range(SIZE):
                 if coords[0] <= j <= coords[2] and coords[1] <= i <= coords[3]:
                     try:
                         self.program_matrix.screen[i][j] = self.selected_color
                     except IndexError:
                         print("Mouse fuera de rango. Ignorando...")
-        self.update_canvas()
+        self.update_canvas(*coords)
 
     def zoom_in(self, event) -> None:
-        x, y = event.x//25, event.y//25 
+        x, y = event.x//BSIZE, event.y//BSIZE 
         rectangle = self.canvas.create_rectangle(
-            x*25,
-            y*25,
-            x*25 + 25,
-            y*25 + 25,
+            x*BSIZE,
+            y*BSIZE,
+            x*BSIZE + BSIZE,
+            y*BSIZE + BSIZE,
             fill="#00ffaa"
         )
         coords: list[int] = []
@@ -589,13 +595,13 @@ class FrontApp(tk.Tk):
 
             coords = [x0, y0, x1, y1]
 
-            self.canvas.coords(rectangle, x*25, y*25, self.mouse_x*25 + 25, self.mouse_y*25 + 25)
+            self.canvas.coords(rectangle, x*BSIZE, y*BSIZE, self.mouse_x*BSIZE + BSIZE, self.mouse_y*BSIZE + BSIZE)
 
         self.zoomed: list[list[int]] = []
         self.zoomed_canvas: tk.Canvas = tk.Canvas(self, bg="#ffffff", width=600, height=600)
-        for i in range(24):
+        for i in range(SIZE):
             row = []
-            for j in range(24):
+            for j in range(SIZE):
                 if coords[0] <= j <= coords[2] and coords[1] <= i <= coords[3]:
                     color = self.program_matrix.screen[i][j]
                     row.append(color)
@@ -612,7 +618,7 @@ class FrontApp(tk.Tk):
         self.canvas.delete(rectangle)
         self.cover = self.canvas.create_rectangle(0, 0, 600, 600, fill="#ffffff")
         self.canvas.grid_remove()
-        self.zoomed_canvas.grid(column=1, row=1, rowspan=14, sticky="nsew")
+        self.zoomed_canvas.grid(column=1, row=1, rowspan=self.canvas_rowspan, sticky="nsew")
 
 
     def paint_square(self, event) -> None:
@@ -625,7 +631,7 @@ class FrontApp(tk.Tk):
         :rtype: None 
         """
         self.painting = True
-        self.mouse_x, self.mouse_y = event.x // 25, event.y // 25
+        self.mouse_x, self.mouse_y = event.x // BSIZE, event.y // BSIZE
         while self.painting:
             try:
                 self.program_matrix.screen[self.mouse_y][self.mouse_x] = self.selected_color
@@ -653,7 +659,7 @@ class FrontApp(tk.Tk):
         self.do_draw_rectangle = False
         self.do_draw_circle = False
 
-    def update_canvas(self) -> None:
+    def update_canvas(self, x0=0, y0=0, x1=0, y1=0) -> None:
         """
         Actualiza el canvas mostrado en pantalla, con los valores actuales 
         del self.program_matrix.screen
@@ -661,10 +667,21 @@ class FrontApp(tk.Tk):
         :return: None 
         :rtype: None 
         """
-        self.program_matrix.screen = self.program_matrix.screen
-        for i in range(len(self.rectangles)):
-            for j in range(len(self.rectangles[0])):
-                self.canvas.itemconfig(
-                    self.rectangles[i][j], fill=self.colors[self.program_matrix.screen[j][i]]
-                )
+        
+        if not all((x0, y0, x1, y1)):
+            for i in range(SIZE):
+                for j in range(SIZE):
+                    self.canvas.itemconfig(
+                        self.rectangles[i][j], fill=self.colors[self.program_matrix.screen[j][i]]
+                    )
+        else:
+            if x1 > SIZE:
+                x1 = x0 + abs(SIZE - x0)
+            if y1 > SIZE:
+                y1 = y0 + abs(SIZE - y0)
 
+            for i in range(x0, x1):
+                for j in range(y0, y1):
+                    self.canvas.itemconfig(
+                        self.rectangles[i][j], fill=self.colors[self.program_matrix.screen[j][i]]
+                    )

@@ -1,5 +1,5 @@
 class PaintxelCanvas:
-    def __init__(self, screen: list[list[int]]) -> None:
+    def __init__(self, screen: list[list[int]], size: int) -> None:
         """
         Esta clase permite controlar de manera sencilla la matriz
         del editor.
@@ -9,6 +9,7 @@ class PaintxelCanvas:
         :return: None
         :rtype: Nonetype
         """
+        self.size = size
         self.screen: list[list[int]] = screen
         self.ascii_values: list[str] = [" ", ".", ":", "-", "=", "¡", "&", "$", "%", "@"]
 
@@ -198,6 +199,7 @@ class PaintxelCanvas:
         :return: La pantalla actual 
         :rtype: list[list[int]] | list
         """
+        result = []
         try:
             with open(f"{name}", "r") as file:
                 rows: list[str] = file.read().split()
@@ -212,11 +214,11 @@ class PaintxelCanvas:
                         auxiliar_row.append(element_to_int)
 
                     self.screen.append(auxiliar_row)
-
+                result = self.screen
         except FileNotFoundError:
-            self.screen: list[list[int]] = []
+            result = []
 
-        return self.screen
+        return result
 
     def clear_screen(self) -> list[list[int]]:
         """
@@ -225,7 +227,7 @@ class PaintxelCanvas:
         :return: La matriz con ceros 
         :rtype: list[list[int]]
         """
-        self.screen = [[0] * 24 for _ in range(24)]
+        self.screen = [[0] * self.size for _ in range(self.size)]
         return self.screen
 
     def __str__(self) -> str:
