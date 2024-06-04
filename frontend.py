@@ -2,6 +2,7 @@ from tkinter import filedialog as fd
 from backend import PaintxelCanvas
 from tkinter import messagebox
 from threading import Thread
+from typing import Callable
 import tkinter as tk
 
 SIZE: int = 75
@@ -383,14 +384,14 @@ class FrontApp(tk.Tk):
         self.selected_color = color
     
     
-    def wrap_event(self, func) -> None:
+    def wrap_event(self, func: Callable) -> None:
         """
         Envuelve una funcion *func*, para después actualizar el canvas. 
         Útil para no escribir una función específica para cada uno de 
         los botones.
 
         :param func: Función del boton que se quiere envolver 
-        :type func: function 
+        :type func: Callable 
         :return: None 
         :rtype: NoneType
         """
