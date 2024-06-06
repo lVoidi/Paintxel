@@ -98,15 +98,17 @@ class FrontApp(tk.Tk):
         )
 
         # Botones de cada una de las funciones
+        rotright = Image.open("PNGs/RotRight.png")
+        rotright = rotright.resize((75, 75))
+        rotright_image = ImageTk.PhotoImage(rotright)
         rotate_right_button = tk.Button(
             self,
-            text="Rotar a derecha",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=4,
+            image=rotright_image,
+            width=75,
+            height=75,
             command=lambda: self.wrap_event(self.program_matrix.rotate_right),
         )
+        rotate_right_button.image = rotright_image
 
         rotleft = Image.open("PNGs/RotLeft.png")
         rotleft = rotleft.resize((75, 75))
@@ -120,76 +122,96 @@ class FrontApp(tk.Tk):
         )
         rotate_left_button.image = rotleft_image
 
-
+        reflexhori = Image.open("PNGs/ReflexHori.png")
+        reflexhori = reflexhori.resize((75, 75))
+        reflexhori_image = ImageTk.PhotoImage(reflexhori)
         horizontal_reflex_button = tk.Button(
             self,
-            text="Reflexión horizontal",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=4,
-            command=lambda: self.wrap_event(self.program_matrix.horizontal_reflex),
-        )
-
-        vertical_reflex_button = tk.Button(
-            self,
-            text="Reflexión vertical",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=4,
+            image=reflexhori_image,
+            width=75,
+            height=75,
             command=lambda: self.wrap_event(self.program_matrix.vertical_reflex),
         )
+        horizontal_reflex_button.image = reflexhori_image
 
+
+        reflexvert = Image.open("PNGs/ReflexVert.png")
+        reflexvert = reflexvert.resize((75, 75))
+        reflexvert_image = ImageTk.PhotoImage(reflexvert)
+        vertical_reflex_button = tk.Button(
+            self,
+            image=reflexvert_image,
+            width=75,
+            height=75,
+            command=lambda: self.wrap_event(self.program_matrix.horizontal_reflex),
+        )
+        vertical_reflex_button.image = reflexvert_image
+
+
+        high_contrast = Image.open("PNGs/Contrast.png")
+        high_contrast = high_contrast.resize((75, 75))
+        high_contrast_image = ImageTk.PhotoImage(high_contrast)
         high_contrast_button = tk.Button(
             self,
-            text="Alto contraste",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=4,
+            image=high_contrast_image,
+            width=75,
+            height=75,
             command=lambda: self.wrap_event(self.program_matrix.high_contrast),
         )
+        high_contrast_button.image = high_contrast_image
 
+
+        invert = Image.open("PNGs/Invert.png")
+        invert = invert.resize((75, 75))
+        invert_image = ImageTk.PhotoImage(invert)
         invert_button = tk.Button(
             self,
-            text="Invertir",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=4,
+            image=invert_image,
+            width=75,
+            height=75,
             command=lambda: self.wrap_event(self.program_matrix.invert),
         )
+        invert_button.image = invert_image
 
+
+        clear = Image.open("PNGs/Clear.png")
+        clear = clear.resize((75, 75))
+        clear_image = ImageTk.PhotoImage(clear)
         clear_button = tk.Button(
             self,
-            text="Limpiar pantalla",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=4,
+            image=clear_image,
+            width=75,
+            height=75,
             command=lambda: self.wrap_event(self.program_matrix.clear_screen),
         )
+        clear_button.image = clear_image
 
+        
+        square = Image.open("PNGs/Square.png")
+        square = square.resize((75, 75))
+        square_image = ImageTk.PhotoImage(square)
         square_button = tk.Button(
             self,
-            text="Cuadrado",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=4,
+            image= square_image, 
+            width=75,
+            height=75,
             command=self.on_draw_rectangle
         )
+        square_button.image = square_image
 
+
+        circle = Image.open("PNGs/Circle.png")
+        circle = circle.resize((75, 75))
+        circle_image = ImageTk.PhotoImage(circle)
         circle_button = tk.Button(
             self,
-            text="Circulo",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=4,
+            image=circle_image,
+            width=75,
+            height=75,
             command=self.on_draw_circle
         )
+        circle_button.image = circle_image
+
 
         imagein = Image.open("PNGs/ZoomIn.png")
         imagein = imagein.resize((75, 75))
