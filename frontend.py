@@ -28,7 +28,7 @@ class FrontApp(tk.Tk):
 
         self.config(bg="#ffffff")
         self.resizable(False, False)
-
+        self.title("Paintxel")
         self.selected_color: int = 0
         
         # Eventos de mouse. Mientras el usuario este ejecutando
@@ -238,33 +238,42 @@ class FrontApp(tk.Tk):
         )
         zoom_out_button.image = zoom_out_image
 
+
+
+        save = Image.open("PNGs/Save.png")
+        save = save.resize((75, 75))
+        save_image = ImageTk.PhotoImage(save)   
         save_as_button = tk.Button(
             self, 
-            text="Guardar",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=4,
+            image=save_image,
+            width=75,
+            height=75,
             command=self.save_file_as
         )
-
+        save_as_button.image = save_image
+        
+        load = Image.open("PNGs/Load.png")
+        load = load.resize((75, 75))
+        load_image = ImageTk.PhotoImage(load)  
         load_button = tk.Button(
             self,
-            text="Cargar",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=4,
+            image=load_image,
+            width=75,
+            height=75,
             command=self.load_file
         )
+        load_button.image = load_image
 
         show_button = tk.Button(
             self,
-            text="Mostrar",
-            bg="#000000",
-            fg="#ffffff",
+            text="""ASCII
+            ART
+                    """,
+            bg="#ffffff",
+            fg="#000000",
             width=10,
             height=4,
+            font=("Times New Roman", 12),
             command=self.show_thread
         )
 
