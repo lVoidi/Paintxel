@@ -4,6 +4,9 @@ from tkinter import messagebox
 from threading import Thread
 from typing import Callable
 import tkinter as tk
+from math import sqrt
+from PIL import Image, ImageTk
+
 
 SIZE: int = 75
 CSIZE: int = 1000
@@ -52,7 +55,7 @@ class FrontApp(tk.Tk):
             "#aaffaa",
             "#aaaaff",
             "#00ff00",
-            "#ff00ff",
+            "#ffff00",
             "#ff0000",
             "#0000ff",
             "#000077",
@@ -64,34 +67,34 @@ class FrontApp(tk.Tk):
 
         # Creacion de todos los botones de colores
         white_button = tk.Button(
-            self, bg="#ffffff", width=10, height=3, command=lambda: self.set_color(0)
+            self, bg="#ffffff", width=10, height=4, command=lambda: self.set_color(0)
         )
         pink_button = tk.Button(
-            self, bg="#ffaaaa", width=10, height=3, command=lambda: self.set_color(1)
+            self, bg="#ffaaaa", width=10, height=4, command=lambda: self.set_color(1)
         )
         light_green_button = tk.Button(
-            self, bg="#aaffaa", width=10, height=3, command=lambda: self.set_color(2)
+            self, bg="#aaffaa", width=10, height=4, command=lambda: self.set_color(2)
         )
         light_blue_button = tk.Button(
-            self, bg="#aaaaff", width=10, height=3, command=lambda: self.set_color(3)
+            self, bg="#aaaaff", width=10, height=4, command=lambda: self.set_color(3)
         )
         green_button = tk.Button(
-            self, bg="#00ff00", width=10, height=3, command=lambda: self.set_color(4)
+            self, bg="#00ff00", width=10, height=4, command=lambda: self.set_color(4)
         )
         fuchsia_button = tk.Button(
-            self, bg="#ff00ff", width=10, height=3, command=lambda: self.set_color(5)
+            self, bg="#ffff00", width=10, height=4, command=lambda: self.set_color(5)
         )
         red_button = tk.Button(
-            self, bg="#ff0000", width=10, height=3, command=lambda: self.set_color(6)
+            self, bg="#ff0000", width=10, height=4, command=lambda: self.set_color(6)
         )
         blue_button = tk.Button(
-            self, bg="#0000ff", width=10, height=3, command=lambda: self.set_color(7)
+            self, bg="#0000ff", width=10, height=4, command=lambda: self.set_color(7)
         )
         dark_blue_button = tk.Button(
-            self, bg="#000077", width=10, height=3, command=lambda: self.set_color(8)
+            self, bg="#000077", width=10, height=4, command=lambda: self.set_color(8)
         )
         black_button = tk.Button(
-            self, bg="#000000", width=10, height=3, command=lambda: self.set_color(9)
+            self, bg="#000000", width=10, height=4, command=lambda: self.set_color(9)
         )
 
         # Botones de cada una de las funciones
@@ -101,19 +104,22 @@ class FrontApp(tk.Tk):
             bg="#000000",
             fg="#ffffff",
             width=10,
-            height=3,
+            height=4,
             command=lambda: self.wrap_event(self.program_matrix.rotate_right),
         )
 
+        rotleft = Image.open("PNGs/RotLeft.png")
+        rotleft = rotleft.resize((75, 75))
+        rotleft_image = ImageTk.PhotoImage(rotleft)
         rotate_left_button = tk.Button(
             self,
-            text="Rotar a la izquierda",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=3,
+            image=rotleft_image,
+            width=75,
+            height=75,
             command=lambda: self.wrap_event(self.program_matrix.rotate_left),
         )
+        rotate_left_button.image = rotleft_image
+
 
         horizontal_reflex_button = tk.Button(
             self,
@@ -121,7 +127,7 @@ class FrontApp(tk.Tk):
             bg="#000000",
             fg="#ffffff",
             width=10,
-            height=3,
+            height=4,
             command=lambda: self.wrap_event(self.program_matrix.horizontal_reflex),
         )
 
@@ -131,7 +137,7 @@ class FrontApp(tk.Tk):
             bg="#000000",
             fg="#ffffff",
             width=10,
-            height=3,
+            height=4,
             command=lambda: self.wrap_event(self.program_matrix.vertical_reflex),
         )
 
@@ -141,7 +147,7 @@ class FrontApp(tk.Tk):
             bg="#000000",
             fg="#ffffff",
             width=10,
-            height=3,
+            height=4,
             command=lambda: self.wrap_event(self.program_matrix.high_contrast),
         )
 
@@ -151,7 +157,7 @@ class FrontApp(tk.Tk):
             bg="#000000",
             fg="#ffffff",
             width=10,
-            height=3,
+            height=4,
             command=lambda: self.wrap_event(self.program_matrix.invert),
         )
 
@@ -161,7 +167,7 @@ class FrontApp(tk.Tk):
             bg="#000000",
             fg="#ffffff",
             width=10,
-            height=3,
+            height=4,
             command=lambda: self.wrap_event(self.program_matrix.clear_screen),
         )
 
@@ -171,7 +177,7 @@ class FrontApp(tk.Tk):
             bg="#000000",
             fg="#ffffff",
             width=10,
-            height=3,
+            height=4,
             command=self.on_draw_rectangle
         )
 
@@ -181,29 +187,34 @@ class FrontApp(tk.Tk):
             bg="#000000",
             fg="#ffffff",
             width=10,
-            height=3,
+            height=4,
             command=self.on_draw_circle
         )
 
+        imagein = Image.open("PNGs/ZoomIn.png")
+        imagein = imagein.resize((75, 75))
+        zoom_in_image = ImageTk.PhotoImage(imagein)
         zoom_in_button = tk.Button(
             self,
-            text="Zoom in",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=3,
+            image=zoom_in_image,
+            width=75,
+            height=75,
             command=self.on_zoom_in
         )
+        zoom_in_button.image = zoom_in_image
 
+
+        imageout = Image.open("PNGs/ZoomOut.png")
+        imageout = imageout.resize((75, 75))
+        zoom_out_image = ImageTk.PhotoImage(imageout)
         zoom_out_button = tk.Button(
             self,
-            text="Zoom out",
-            bg="#000000",
-            fg="#ffffff",
-            width=10,
-            height=3,
+            image=zoom_out_image,
+            width=75,
+            height=75,
             command=self.on_zoom_out
         )
+        zoom_out_button.image = zoom_out_image
 
         save_as_button = tk.Button(
             self, 
@@ -211,7 +222,7 @@ class FrontApp(tk.Tk):
             bg="#000000",
             fg="#ffffff",
             width=10,
-            height=3,
+            height=4,
             command=self.save_file_as
         )
 
@@ -221,7 +232,7 @@ class FrontApp(tk.Tk):
             bg="#000000",
             fg="#ffffff",
             width=10,
-            height=3,
+            height=4,
             command=self.load_file
         )
 
@@ -231,7 +242,7 @@ class FrontApp(tk.Tk):
             bg="#000000",
             fg="#ffffff",
             width=10,
-            height=3,
+            height=4,
             command=self.show_thread
         )
 
@@ -264,6 +275,8 @@ class FrontApp(tk.Tk):
         blue_button.grid(column=3, row=8)
         dark_blue_button.grid(column=3, row=9)
         black_button.grid(column=3, row=10)
+        zoom_in_button.grid(column=3, row=11)
+        zoom_out_button.grid(column=3, row=12)
 
 
         rotate_right_button.grid(column=0, row=1)
@@ -275,13 +288,11 @@ class FrontApp(tk.Tk):
         clear_button.grid(column=0, row=7)
         square_button.grid(column=0, row=8)
         circle_button.grid(column=0, row=9)
-        zoom_in_button.grid(column=0, row=10)
-        zoom_out_button.grid(column=0, row=11)
-        save_as_button.grid(column=0, row=12)
-        load_button.grid(column=0, row=13)
-        show_button.grid(column=0, row=14)
+        save_as_button.grid(column=0, row=10)
+        load_button.grid(column=0, row=11)
+        show_button.grid(column=0, row=12)
         
-        self.canvas_rowspan = 14
+        self.canvas_rowspan = 12
 
         self.canvas.grid(column=1, row=1, rowspan=self.canvas_rowspan, sticky="nsew")
         
@@ -523,7 +534,7 @@ class FrontApp(tk.Tk):
         radio: int = abs(x1 - x0)//2
         for i in range(SIZE):
             for j in range(SIZE):
-                dist: float = ((i - xcnt)**2 + (j - ycnt)**2) ** (1/2)
+                dist: float = sqrt((i - xcnt)**2 + (j - ycnt)**2)
                 if dist <= radio:
                     self.program_matrix.screen[j][i] = self.selected_color
 
@@ -599,7 +610,7 @@ class FrontApp(tk.Tk):
             self.canvas.coords(rectangle, x*BSIZE, y*BSIZE, self.mouse_x*BSIZE + BSIZE, self.mouse_y*BSIZE + BSIZE)
 
         self.zoomed: list[list[int]] = []
-        self.zoomed_canvas: tk.Canvas = tk.Canvas(self, bg="#ffffff", width=600, height=600)
+        self.zoomed_canvas: tk.Canvas = tk.Canvas(self, bg="#ffffff", width=CSIZE, height=CSIZE)
         for i in range(SIZE):
             row = []
             for j in range(SIZE):
@@ -610,7 +621,7 @@ class FrontApp(tk.Tk):
                     continue
             if row:
                 self.zoomed.append(row)
-        size_y, size_x = 600/len(self.zoomed[0]), 600/len(self.zoomed)
+        size_y, size_x = CSIZE/len(self.zoomed[0]), CSIZE/len(self.zoomed)
 
         for i in range(len(self.zoomed)):
             for j in range(len(self.zoomed[0])):
