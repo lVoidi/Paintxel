@@ -371,7 +371,7 @@ class FrontApp(tk.Tk):
         sub_window_ascii_art: tk.Toplevel = tk.Toplevel(self)
         sub_window_ascii_art.config(bg="#000000")
         sub_window_ascii_art.resizable(False, False)
-        sub_window_ascii_art.geometry("500x500")
+        
 
         matrix: str = str(self.program_matrix)
         ascii_art: str = self.program_matrix.ascii_art()
