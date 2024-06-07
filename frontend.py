@@ -266,9 +266,8 @@ class FrontApp(tk.Tk):
         load_button.image = load_image
 
 
-        show = Image.open("PNGs/Ascci.png")
-        show = show.resize((75, 75))
-        show_image = ImageTk.PhotoImage(show) 
+        show_img = Image.open("PNGs/Ascci.png").resize((75, 75))
+        show_image = ImageTk.PhotoImage(show_img) 
         show_button = tk.Button(
             self,
             image=show_image,
@@ -277,7 +276,7 @@ class FrontApp(tk.Tk):
             font=("Times New Roman", 12),
             command=self.show_thread
         )
-        show_image.image = show_image
+        show_button.image = show_image
 
 
         self.canvas: tk.Canvas = tk.Canvas(self, bg="#ffffff", width=CSIZE, height=CSIZE)
