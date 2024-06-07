@@ -9,7 +9,7 @@ from PIL import Image, ImageTk
 import time
 
 SIZE: int = 50
-CSIZE: int = 1000
+CSIZE: int = 800
 BSIZE: int = CSIZE//SIZE
 
 class FrontApp(tk.Tk):
@@ -66,213 +66,214 @@ class FrontApp(tk.Tk):
         bottom_canvas: tk.Canvas = tk.Canvas(self, bg="#9b9b9b", width=700, height=50)
 
         # Creacion de todos los botones de colores
+
         white_button = tk.Button(
-            self, bg="#ffffff", width=10, height=4, command=lambda: self.set_color(0)
+            self, bg="#ffffff", width=8, height=3, command=lambda: self.set_color(0)
         )
         pink_button = tk.Button(
-            self, bg="#ffaaaa", width=10, height=4, command=lambda: self.set_color(1)
+            self, bg="#ffaaaa", width=8, height=3, command=lambda: self.set_color(1)
         )
         light_green_button = tk.Button(
-            self, bg="#aaffaa", width=10, height=4, command=lambda: self.set_color(2)
+            self, bg="#aaffaa", width=8, height=3, command=lambda: self.set_color(2)
         )
         light_blue_button = tk.Button(
-            self, bg="#aaaaff", width=10, height=4, command=lambda: self.set_color(3)
+            self, bg="#aaaaff", width=8, height=3, command=lambda: self.set_color(3)
         )
         green_button = tk.Button(
-            self, bg="#00ff00", width=10, height=4, command=lambda: self.set_color(4)
+            self, bg="#00ff00", width=8, height=3, command=lambda: self.set_color(4)
         )
         fuchsia_button = tk.Button(
-            self, bg="#ffff00", width=10, height=4, command=lambda: self.set_color(5)
+            self, bg="#ffff00", width=8, height=3, command=lambda: self.set_color(5)
         )
         red_button = tk.Button(
-            self, bg="#ff0000", width=10, height=4, command=lambda: self.set_color(6)
+            self, bg="#ff0000", width=8, height=3, command=lambda: self.set_color(6)
         )
         blue_button = tk.Button(
-            self, bg="#0000ff", width=10, height=4, command=lambda: self.set_color(7)
+            self, bg="#0000ff", width=8, height=3, command=lambda: self.set_color(7)
         )
         dark_blue_button = tk.Button(
-            self, bg="#000077", width=10, height=4, command=lambda: self.set_color(8)
+            self, bg="#000077", width=8, height=3, command=lambda: self.set_color(8)
         )
         black_button = tk.Button(
-            self, bg="#000000", width=10, height=4, command=lambda: self.set_color(9)
+            self, bg="#000000", width=8, height=3, command=lambda: self.set_color(9)
         )
 
         # Botones de cada una de las funciones
         rotright = Image.open("PNGs/RotRight.png")
-        rotright = rotright.resize((75, 75))
+        rotright = rotright.resize((50, 50))
         rotright_image = ImageTk.PhotoImage(rotright)
         rotate_right_button = tk.Button(
             self,
             image=rotright_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=lambda: self.wrap_event(self.program_matrix.rotate_right),
         )
         rotate_right_button.image = rotright_image
 
 
         rotleft = Image.open("PNGs/RotLeft.png")
-        rotleft = rotleft.resize((75, 75))
+        rotleft = rotleft.resize((50, 50))
         rotleft_image = ImageTk.PhotoImage(rotleft)
         rotate_left_button = tk.Button(
             self,
             image=rotleft_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=lambda: self.wrap_event(self.program_matrix.rotate_left),
         )
         rotate_left_button.image = rotleft_image
 
         reflexhori = Image.open("PNGs/ReflexHori.png")
-        reflexhori = reflexhori.resize((75, 75))
+        reflexhori = reflexhori.resize((50, 50))
         reflexhori_image = ImageTk.PhotoImage(reflexhori)
         horizontal_reflex_button = tk.Button(
             self,
             image=reflexhori_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=lambda: self.wrap_event(self.program_matrix.vertical_reflex),
         )
         horizontal_reflex_button.image = reflexhori_image
 
 
         reflexvert = Image.open("PNGs/ReflexVert.png")
-        reflexvert = reflexvert.resize((75, 75))
+        reflexvert = reflexvert.resize((50, 50))
         reflexvert_image = ImageTk.PhotoImage(reflexvert)
         vertical_reflex_button = tk.Button(
             self,
             image=reflexvert_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=lambda: self.wrap_event(self.program_matrix.horizontal_reflex),
         )
         vertical_reflex_button.image = reflexvert_image
 
 
         high_contrast = Image.open("PNGs/Contrast.png")
-        high_contrast = high_contrast.resize((75, 75))
+        high_contrast = high_contrast.resize((50, 50))
         high_contrast_image = ImageTk.PhotoImage(high_contrast)
         high_contrast_button = tk.Button(
             self,
             image=high_contrast_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=lambda: self.wrap_event(self.program_matrix.high_contrast),
         )
         high_contrast_button.image = high_contrast_image
 
 
         invert = Image.open("PNGs/Invert.png")
-        invert = invert.resize((75, 75))
+        invert = invert.resize((50, 50))
         invert_image = ImageTk.PhotoImage(invert)
         invert_button = tk.Button(
             self,
             image=invert_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=lambda: self.wrap_event(self.program_matrix.invert),
         )
         invert_button.image = invert_image
 
 
         clear = Image.open("PNGs/Clear.png")
-        clear = clear.resize((75, 75))
+        clear = clear.resize((50, 50))
         clear_image = ImageTk.PhotoImage(clear)
         clear_button = tk.Button(
             self,
             image=clear_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=lambda: self.wrap_event(self.program_matrix.clear_screen),
         )
         clear_button.image = clear_image
 
         
         square = Image.open("PNGs/Square.png")
-        square = square.resize((75, 75))
+        square = square.resize((50, 50))
         square_image = ImageTk.PhotoImage(square)
         square_button = tk.Button(
             self,
             image= square_image, 
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=self.on_draw_rectangle
         )
         square_button.image = square_image
 
 
         circle = Image.open("PNGs/Circle.png")
-        circle = circle.resize((75, 75))
+        circle = circle.resize((50, 50))
         circle_image = ImageTk.PhotoImage(circle)
         circle_button = tk.Button(
             self,
             image=circle_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=self.on_draw_circle
         )
         circle_button.image = circle_image
 
 
         imagein = Image.open("PNGs/ZoomIn.png")
-        imagein = imagein.resize((75, 75))
+        imagein = imagein.resize((50, 50))
         zoom_in_image = ImageTk.PhotoImage(imagein)
         zoom_in_button = tk.Button(
             self,
             image=zoom_in_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=self.on_zoom_in
         )
         zoom_in_button.image = zoom_in_image
 
 
         imageout = Image.open("PNGs/ZoomOut.png")
-        imageout = imageout.resize((75, 75))
+        imageout = imageout.resize((50, 50))
         zoom_out_image = ImageTk.PhotoImage(imageout)
         zoom_out_button = tk.Button(
             self,
             image=zoom_out_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=self.on_zoom_out
         )
         zoom_out_button.image = zoom_out_image
 
 
         save = Image.open("PNGs/Save.png")
-        save = save.resize((75, 75))
+        save = save.resize((50, 50))
         save_image = ImageTk.PhotoImage(save)   
         save_as_button = tk.Button(
             self, 
             image=save_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=self.save_file_as
         )
         save_as_button.image = save_image
 
 
         load = Image.open("PNGs/Load.png")
-        load = load.resize((75, 75))
+        load = load.resize((50, 50))
         load_image = ImageTk.PhotoImage(load)  
         load_button = tk.Button(
             self,
             image=load_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             command=self.load_file
         )
         load_button.image = load_image
 
 
-        show_img = Image.open("PNGs/Ascci.png").resize((75, 75))
+        show_img = Image.open("PNGs/Ascci.png").resize((50, 50))
         show_image = ImageTk.PhotoImage(show_img) 
         show_button = tk.Button(
             self,
             image=show_image,
-            width=75,
-            height=75,
+            width=50,
+            height=50,
             font=("Times New Roman", 12),
             command=self.show_thread
         )
