@@ -110,6 +110,7 @@ class FrontApp(tk.Tk):
         )
         rotate_right_button.image = rotright_image
 
+
         rotleft = Image.open("PNGs/RotLeft.png")
         rotleft = rotleft.resize((75, 75))
         rotleft_image = ImageTk.PhotoImage(rotleft)
@@ -239,7 +240,6 @@ class FrontApp(tk.Tk):
         zoom_out_button.image = zoom_out_image
 
 
-
         save = Image.open("PNGs/Save.png")
         save = save.resize((75, 75))
         save_image = ImageTk.PhotoImage(save)   
@@ -251,7 +251,8 @@ class FrontApp(tk.Tk):
             command=self.save_file_as
         )
         save_as_button.image = save_image
-        
+
+
         load = Image.open("PNGs/Load.png")
         load = load.resize((75, 75))
         load_image = ImageTk.PhotoImage(load)  
