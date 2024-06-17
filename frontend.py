@@ -559,9 +559,13 @@ class FrontApp(tk.Tk):
                 y0, y1 = self.mouse_y, y
             
 
-            if abs(x1 - x0) == abs(y1 - y0):
-                coords = [x0, y0, x1, y1]
-                self.canvas.coords(oval, x0*BSIZE, y0*BSIZE, x1*BSIZE + BSIZE, y1*BSIZE + BSIZE)
+            if abs(x1 - x0) != abs(y1 - y0):
+                size = abs(x1 - x0)
+                if abs(x1 - x0) < abs(y1 - y0):
+                    size = abs(y1 - y0)
+                coords = [x0, y0, x0 + size, y0 + size]
+
+            self.canvas.coords(oval, x0*BSIZE, y0*BSIZE, x1*BSIZE + BSIZE, y1*BSIZE + BSIZE)
         
         self.canvas.delete(oval)
         
@@ -716,7 +720,7 @@ class FrontApp(tk.Tk):
         :rtype: None 
         """
         
-        if not all((x0, y0, x1, y1)):
+        if not any((x0, y0, x1, y1)):
             for i in range(SIZE):
                 for j in range(SIZE):
                     self.canvas.itemconfig(
